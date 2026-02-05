@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Register() {
     const navigate = useNavigate();
-    const [message, setMessage] = useState({message: ""});
+    const [messages, setMessage] = useState({message: ""});
     const [registerData, setRegisterData] = useState({
         username: "",
         password: "",
@@ -16,6 +16,11 @@ export default function Register() {
 
     const handleRegister = async (e) => {
         e.preventDefault();
+
+        if (registerData.confirmPassword !== registerData.password) {
+            console.error("Password does not match");
+            return;
+        }
 
         try{
             const res = await RegisterApi(registerData);
