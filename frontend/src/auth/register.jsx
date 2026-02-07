@@ -22,16 +22,27 @@ export default function Register() {
             return;
         }
 
+        if (!registerData.phoneNumber) {
+            console.error("Phone number is required");
+            return;
+        }
+
         try{
-            const res = await RegisterApi(registerData);
+            // Transform data: rename phoneNumber to phone_number and remove confirmPassword
+            const apiData = {
+                username: registerData.username,
+                password: registerData.password,
+                phone_number: registerData.phoneNumber,
+                role: registerData.role
+            };
 
-            if (!res.ok) {
-               throw new Error("An Error occured during registration");
-            }
+            const res = await RegisterApi(apiData);
 
-            const data = await res.json();
             
-            setMessage(data.message);
+
+            console.log(res);
+            
+            setMessage(res.msg);
             
             navigate('/login');
         } catch (err) {
@@ -55,27 +66,32 @@ export default function Register() {
                             placeholder="username"
                         />
 
-                        <input type="text" 
-                            onChange={(e) => setRegisterData({...registerData, password: e.target.value})}
-                            className="p-2 focus:outline-none bg-gray-100 rounded-md focus:ring-2 transition duration-200"
-                            placeholder="password"
-                        />
                         
-                        <input type="text" 
+                        <input type="number" 
                             onChange={(e) => setRegisterData({...registerData, phoneNumber: e.target.value})}
                             className="p-2 focus:outline-none bg-gray-100 rounded-md focus:ring-2 transition duration-200"
                             placeholder="Phone number"
                         />
-                        
-                        <input type="text" 
+
+                        <input type="password" 
+                            onChange={(e) => setRegisterData({...registerData, password: e.target.value})}
+                            className="p-2 focus:outline-none bg-gray-100 rounded-md focus:ring-2 transition duration-200"
+                            placeholder="password"
+                        />
+
+                        <input type="password" 
                             onChange={(e) => setRegisterData({...registerData, confirmPassword: e.target.value })}
                             className="p-2 focus:outline-none bg-gray-100 rounded-md focus:ring-2 transition duration-200"
                             placeholder="Confirm password"
                         />
                         
-                        <select className="w-full p-2 border border-black rounded-md">
-                            <option value="admin" onChange={(e) => setRegisterData({...registerData, role: e.target.value})}>admin</option>
-                            <option value="employee" onChange={(e) => setRegisterData({...registerData, role: e.target.value})}>employee</option>
+                        <select 
+                            className="w-full p-2 border border-black rounded-md"
+                            onChange={(e) => setRegisterData({...registerData, role: e.target.value})}
+                        >
+                            <option value="admin">admin</option>
+                            <option value="citizen">citizen</option>
+                            <option value="employee">employee</option>
                         </select>
                     </div>
 

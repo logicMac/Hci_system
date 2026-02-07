@@ -4,7 +4,7 @@ type LoginData = {
 }
 
 export async function LoginApi(loginData: LoginData) {
-    const LOGIN_URL = "http://localhost:5173/auth/login";
+    const LOGIN_URL = "http://localhost:3000/api/users/login";
 
     if (!loginData) {
         return console.log("The api does not receive the data");
@@ -33,13 +33,13 @@ export async function LoginApi(loginData: LoginData) {
 type RegisterData = {
     username: string,
     password: string,
-    phone_number: number;
+    phone_number: string | number;
     role: string
 }
 
 export async function RegisterApi(registerData: RegisterData) {
 
-    const REGISTER_URL = "http://localhost:5173/auth/register";
+    const REGISTER_URL = "http://localhost:3000/api/users/register";
 
     try {
         const res = await fetch(REGISTER_URL, {

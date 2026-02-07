@@ -1,6 +1,7 @@
 import cors from "cors";
 import express from 'express';
 import db from "./db.ts";
+import userRoutes from "./routes/userRoutes.ts"
 
 const app = express();
 const PORT = 3000;
@@ -15,6 +16,8 @@ app.use(cors({
 }))
 
 console.log(db);
+
+app.use("/api/users", userRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server running at ${PORT}`);
