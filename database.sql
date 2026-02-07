@@ -7,6 +7,6 @@ CREATE TABLE users (
     username VARCHAR(50) NOT NULL,
     password VARCHAR(50) NOT NULL,
     phone_number INT(15) NOT NULL,
-    role ENUM  
+    role ENUM('admin', 'citizen', 'Barangay Staff', 'Department Officer', 'System');  
 );
 

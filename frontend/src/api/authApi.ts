@@ -34,6 +34,7 @@ type RegisterData = {
     username: string,
     password: string,
     phone_number: number;
+    role: string
 }
 
 export async function RegisterApi(registerData: RegisterData) {
