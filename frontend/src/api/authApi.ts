@@ -102,6 +102,22 @@ export async function VerifyOtp(verifyOtp: verifyOtpParams) {
             },
             body: JSON.stringify(verifyOtp)
         });
+        
+        const data = await res.json();
+
+        if (!res.ok) {   
+            return {
+                ok: false,
+                msg: data.msg
+            }
+        }
+        
+        return {
+            ok: true,
+            msg: "Login Successfull",
+            data
+        }
+
     } catch (err) {
         console.log("Cannot send data to backend");
     }

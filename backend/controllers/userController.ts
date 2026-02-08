@@ -3,7 +3,7 @@ import { User }  from "../model/userModel.ts";
 import  jwt from 'jsonwebtoken';
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
-import { verify } from "node:crypto";
+import { sendSms } from "../services/smsService.ts";
 dotenv.config();
 
 const generateOtp = () => {
@@ -49,11 +49,18 @@ export const userController = {
             }
 
             const otp = generateOtp();
-            const expires: any  = new Date(Date.now() + 5 * 60 * 100);
+            const expires: any  = new Date(Date.now() + 5 * 60 * 1000);
 
             await User.saveOtp(user.user_id, otp, expires);
+            await sendSms(user.phone_number, otp);
+
+            res.status(200).json({
+                success: true,
+                msg: "Otp created"
+            })
 
         } catch (err) {
+            console.error("Login Error:", err)
             res.status(500).json({
                 success: false,
                 msg: "Internal Server Error"

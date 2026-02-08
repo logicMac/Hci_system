@@ -34,7 +34,7 @@ export const User = {
 
     saveOtp: async (user_id: number, otp: string, expires: number) => {
         const [rows] = await db.query(`
-            INSERT INTO user_otps (user_id, otp, expires) VALUES (?, ?, ?)  
+            INSERT INTO user_otps (user_id, otp, otp_expires) VALUES (?, ?, ?)  
             `, [user_id, otp, expires]
         );
         
@@ -42,10 +42,10 @@ export const User = {
     },
 
     verifyOtp: async (user_id: number, otp: string) => {
-        const currentTime = new Date();
+        const currentTime = new Date().getTime();
         const [rows] = await db.query(`
             SELECT * FROM user_otps 
-            WHERE user_id = ? AND otp = ? AND expires > ?
+            WHERE user_id = ? AND otp = ? AND otp_expires > ?
             `, [user_id, otp, currentTime]
         );
 

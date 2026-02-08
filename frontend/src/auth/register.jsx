@@ -12,7 +12,7 @@ export default function Register() {
         password: "",
         confirmPassword: "",
         phoneNumber: "",
-        role: "employee"
+        role: ""
     });
 
     const handleRegister = async (e) => {
@@ -27,6 +27,12 @@ export default function Register() {
             setError("Phone number is required");
             return;
         }
+
+        if (!registerData.role) {
+            console.log("role is required");
+            setError("Role is required");
+            return;
+        } 
 
         try{
             // Transform data: rename phoneNumber to phone_number and remove confirmPassword
@@ -76,7 +82,7 @@ export default function Register() {
                         />
 
                         
-                        <input type="number" 
+                        <input type="string" 
                             onChange={(e) => setRegisterData({...registerData, phoneNumber: e.target.value})}
                             className="p-2 focus:outline-none bg-gray-100 rounded-md focus:ring-2 transition duration-200"
                             placeholder="Phone number"
