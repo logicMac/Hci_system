@@ -17,23 +17,31 @@ export async function LoginApi(loginData: LoginData) {
             body: JSON.stringify(loginData)
         })
 
-        if (!res.ok) {
-            const error = await res.text();
-            throw new Error(error || "Login Failed");
-        }
-
         const data = await res.json();
 
-        return data;
+        if (!res.ok) {
+            
+            return {
+                ok: false,
+                msg: data.msg 
+            }
+        }
+
+        return {
+            ok: true,
+            msg: data.msg,
+            data
+        };
     } catch (err) {
         console.log(`Error sending data to backend: ${err}`);
         throw err;
     }
 }
+
 type RegisterData = {
     username: string,
     password: string,
-    phone_number: string | number;
+    phone_number: string;
     role: string
 }
 
@@ -49,17 +57,52 @@ export async function RegisterApi(registerData: RegisterData) {
             },
             body: JSON.stringify(registerData)
         });
-        if (!res.ok) {
-            const error = await res.text();
-            throw new Error(error || "Registeration Failed");
-        }
 
         const data = await res.json();
 
-        return data;
+        if (!res.ok) {
+            // Return structured error response
+            return {
+                ok: false,
+                msg: data.msg || "Registration failed"
+            };
+        }
+
+        return {
+            ok: true, 
+            msg: data.msg || "Registration successful",
+            data
+        };
 
     } catch (err) {
         console.error("Error sending data to Backend");
-        throw err;
+        return {
+            ok: false,
+            msg: err instanceof Error ? err.message : "An error occurred"
+        };
+    }
+}
+
+type verifyOtpParams = {
+    id: number,
+    otp: string
+}
+
+export async function VerifyOtp(verifyOtp: verifyOtpParams) {
+    if(!verifyOtp.otp || !verifyOtp.id) {
+        console.log("Api dont recieve the otp or ID");
+        return;
+    }
+
+    try {
+        const res = await fetch("http://localhost:3000/api/users/register", {
+            method: 'POST',
+            headers: {
+                "Content-type" : "application/json"
+            },
+            body: JSON.stringify(verifyOtp)
+        });
+    } catch (err) {
+        console.log("Cannot send data to backend");
     }
 }

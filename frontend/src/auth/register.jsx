@@ -2,10 +2,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { RegisterApi } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
+import MessageModal from "../modals/messageModal";
 
 export default function Register() {
     const navigate = useNavigate();
-    const [message, setMessage] = useState({message: ""});
+    const [error, setError] = useState("");
     const [registerData, setRegisterData] = useState({
         username: "",
         password: "",
@@ -18,12 +19,12 @@ export default function Register() {
         e.preventDefault();
 
         if (registerData.confirmPassword !== registerData.password) {
-            console.error("Password does not match");
+            setError("Password does not match");
             return;
         }
 
         if (!registerData.phoneNumber) {
-            console.error("Phone number is required");
+            setError("Phone number is required");
             return;
         }
 
@@ -38,16 +39,23 @@ export default function Register() {
 
             const res = await RegisterApi(apiData);
 
+            // Always show modal with the response message (success or error)
+            if (!res.ok) {
+                setError(res.msg);
+                return;
+            }
             
 
-            console.log(res);
-            
-            setMessage(res.msg);
-            
-            navigate('/login');
+            // If registration was successful, log it
+            if (res.ok) {
+                console.log(res);
+                navigate('/login');
+            }
+
         } catch (err) {
             console.error("Cannot send data to API", err);
-            return;
+            // Show modal with error message
+            setError(err.message || "An error occurred during registration");
         }
     }
 
@@ -58,6 +66,7 @@ export default function Register() {
                     onSubmit={handleRegister}
                     className="flex flex-col justify-center items-center space-y-10 p-10 shadow-xl">
                     <h1 className="text-3xl font-semibold">REGISTER</h1>
+                    <p className="text-red-500">{error}</p>    
 
                     <div className="flex flex-col space-y-8 w-full">
                         <input type="text" 

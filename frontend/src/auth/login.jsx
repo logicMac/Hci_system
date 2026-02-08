@@ -2,9 +2,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { LoginApi } from "../api/authApi";
+import MessageModal from "../modals/messageModal";
 
 export default function Login(){
    const navigate = useNavigate(); 
+   const [error, setError] = useState("");
    const [loginForm, setLoginForm] = useState({
         username: "",
         password: "",
@@ -20,12 +22,15 @@ export default function Login(){
             throw new Error("Failed Login");
         }
 
-        const data = await res.json();
+        if (!res.ok) {
+            setError(res.msg);
+            return;
+        }
 
-        sessionStorage.setItem("token", data.token);
-        sessionStorage.setItem("role", data.user.role);
+        sessionStorage.setItem("token", res.token);
+        sessionStorage.setItem("role", res.user.role);
 
-        if (data.role === "admin") {
+        if (res.role === "admin") {
             navigate('/');
         } else {
             navigate('/')
@@ -44,6 +49,7 @@ export default function Login(){
                     onSubmit={handleLogin}
                     className="flex flex-col justify-center items-center p-10 space-y-10 shadow-xl rounded-md">
                     <h1 className="text-3xl font-semibold">LOGIN</h1>
+                    <p className="text-red-500">{error}</p>
                     
                     <div className="flex flex-col space-y-8 w-full">
                         <input type="text" 
