@@ -3,10 +3,12 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { LoginApi } from "../api/authApi";
 import MessageModal from "../modals/messageModal";
+import OtpPage from "../auth/otp";
 
 export default function Login(){
    const navigate = useNavigate(); 
    const [error, setError] = useState("");
+   const [otp, setOtp] = useState({user_id: "", otp: ""});
    const [loginForm, setLoginForm] = useState({
         username: "",
         password: "",
@@ -27,6 +29,12 @@ export default function Login(){
             return;
         }
 
+        if(!res.authenticated) {
+            setOtp({res});
+            navigate('/otp');
+            return;
+        }
+
         sessionStorage.setItem("token", res.token);
         sessionStorage.setItem("role", res.user.role);
 
@@ -37,7 +45,8 @@ export default function Login(){
         }
 
     } catch (err) {
-        console.error("Error fetching data from api");
+        console.error("Error fetching data from api", err);
+        setError("Failed Login");
         throw err; 
     }
    }
@@ -77,6 +86,11 @@ export default function Login(){
                     </Link>
                 </form>
             </div> 
+
+            <OtpPage
+                otp={otp}
+                setOtp={setOtp}
+            />
         </div>
    );
 }

@@ -16,6 +16,13 @@ export async function sendSms(phone: string, otp: string) {
                 message: `Your OTP code is ${otp}. Do not share this with anyone`
            })
         }); 
+
+        const data= await res.json();
+        
+        if (!res.ok) {
+            console.error("Philsms API Error: ", data);
+            throw new Error("Failed to send SMS"); 
+        }
     } catch (err) {
         console.error("Error sending sms to user");
     }
